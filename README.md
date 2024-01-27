@@ -1,5 +1,5 @@
 ## Table of Contents
-1. [Introduction](#part1-introduction)
+1. [Part 1: Introduction](#part1-introduction)
 2. [Part 2: Shadows](#part2-shadows)
 3. [Part 3](#part3)
    1. [Diffuse Component – Lambertian Shading](#part31-diffuse-component--lambertian-shading)
