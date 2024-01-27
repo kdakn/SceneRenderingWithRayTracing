@@ -14,10 +14,8 @@ In the initial phase of the project, implemented the "The Ray Tracing Algorithm"
 
 The key steps in coding this process included:
 - Calculating the light vector direction from the intersected object to the light source. With this formula from the code: "𝑙𝑖𝑔ℎ𝑡_𝑣𝑒𝑐 = 𝑙𝑖𝑔ℎ𝑡.𝑙𝑜𝑐𝑎𝑡𝑖𝑜𝑛 − ℎ𝑖𝑡_𝑙𝑜𝑐"
-- After finding the light vector it was crucial to prevent “Spurious Self-Occlusion” because in some rare cases, the ray can be re-intersected with the same object. To do this the light vector position must be shifted with respect to the “epsilon” value. So,  shifted the light vector from the hitting location. Obtained this functionality with the code:
-- "𝑛𝑒𝑤_𝑜𝑟𝑖𝑔 = ℎ𝑖𝑡_𝑙𝑜𝑐 + 𝑒𝑝𝑠 ∗ 𝑙𝑖𝑔ℎ𝑡_𝑑𝑖𝑟" where eps is e-3.
-- Finally, to test if the ray shot to the light source intersected with any of the objects in the scene the “ray_cast()” function has been used. The code can be observed with:
-- "ℎ𝑎𝑠_𝑙𝑖𝑔ℎ𝑡_ℎ𝑖𝑡,_,_,_,_,_ = 𝑟𝑎𝑦_𝑐𝑎𝑠𝑡(𝑠𝑐𝑒𝑛𝑒,𝑛𝑒𝑤_𝑜𝑟𝑖𝑔,𝑙𝑖𝑔ℎ𝑡_𝑑𝑖𝑟)"
+- After finding the light vector it was crucial to prevent “Spurious Self-Occlusion” because in some rare cases, the ray can be re-intersected with the same object. To do this the light vector position must be shifted with respect to the “epsilon” value. So,  shifted the light vector from the hitting location. Obtained this functionality with the code: "𝑛𝑒𝑤_𝑜𝑟𝑖𝑔 = ℎ𝑖𝑡_𝑙𝑜𝑐 + 𝑒𝑝𝑠 ∗ 𝑙𝑖𝑔ℎ𝑡_𝑑𝑖𝑟" where eps is e-3.
+- Finally, to test if the ray shot to the light source intersected with any of the objects in the scene the “ray_cast()” function has been used. The code can be observed with: "ℎ𝑎𝑠_𝑙𝑖𝑔ℎ𝑡_ℎ𝑖𝑡,_,_,_,_,_ = 𝑟𝑎𝑦_𝑐𝑎𝑠𝑡(𝑠𝑐𝑒𝑛𝑒,𝑛𝑒𝑤_𝑜𝑟𝑖𝑔,𝑙𝑖𝑔ℎ𝑡_𝑑𝑖𝑟)"
 
 The resulting rendered image is shown in [Figure 1](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/bf554251b051e0741c840ab07af992f44065000f/renders_for_readme/checkpoint1.png).
 
@@ -26,10 +24,8 @@ The second part of the project consisted of finding both the "Diffuse Component"
 
 ### Part 3.1: Diffuse Component – Lambertian Shading
 The Diffuse Component, obtained from Lambertian Shading, produces matte images without light reflections. This component is calculated based on the object's color (diffuse coefficient), light intensity, and the dot product of the normal and light vectors. Mentioned formula to obtatin this image is: 
-- "L = 𝑘𝑑 ∗ 𝐼 ∗ max(0,n · l)" and the code for this was: 
-- "𝑑𝑖𝑓𝑓𝑢𝑠𝑒_𝑐𝑜𝑚𝑝𝑜𝑛𝑒𝑛𝑡 = 𝑛𝑝.𝑎𝑟𝑟𝑎𝑦(𝑑𝑖𝑓𝑓𝑢𝑠𝑒_𝑐𝑜𝑙𝑜𝑟) ∗ 𝐼_𝑙𝑖𝑔ℎ𝑡 ∗( 𝑛𝑝.𝑑𝑜𝑡(𝑙𝑖𝑔ℎ𝑡_𝑑𝑖𝑟,ℎ𝑖𝑡_𝑛𝑜𝑟𝑚))". 
-After applying new color values of the pixels of objects are added to to the final pixel color: 
-- "𝑐𝑜𝑙𝑜𝑟 += 𝑛𝑝.𝑎𝑟𝑟𝑎𝑦(𝑑𝑖𝑓𝑓𝑢𝑠𝑒_𝑐𝑜𝑚𝑝𝑜𝑛𝑒𝑛𝑡)"
+- "L = 𝑘𝑑 ∗ 𝐼 ∗ max(0,n · l)" and the code for this was: "𝑑𝑖𝑓𝑓𝑢𝑠𝑒_𝑐𝑜𝑚𝑝𝑜𝑛𝑒𝑛𝑡 = 𝑛𝑝.𝑎𝑟𝑟𝑎𝑦(𝑑𝑖𝑓𝑓𝑢𝑠𝑒_𝑐𝑜𝑙𝑜𝑟) ∗ 𝐼_𝑙𝑖𝑔ℎ𝑡 ∗( 𝑛𝑝.𝑑𝑜𝑡(𝑙𝑖𝑔ℎ𝑡_𝑑𝑖𝑟,ℎ𝑖𝑡_𝑛𝑜𝑟𝑚))". 
+- After applying new color values of the pixels of objects are added to to the final pixel color: "𝑐𝑜𝑙𝑜𝑟 += 𝑛𝑝.𝑎𝑟𝑟𝑎𝑦(𝑑𝑖𝑓𝑓𝑢𝑠𝑒_𝑐𝑜𝑚𝑝𝑜𝑛𝑒𝑛𝑡)"
 The rendered image is shown in [Figure 2](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/bf554251b051e0741c840ab07af992f44065000f/renders_for_readme/checkpoint2.1_diffuse.png).
 
 ### Part 3.2: Specular Component – Blinn Phong Shading
