@@ -46,6 +46,6 @@ This term is: 𝑘𝑎 𝐼𝑎 where ka: surface ambient coefficient and Ia is 
 - Add this calculated term to the global color variable: "𝑐𝑜𝑙𝑜𝑟 += 𝐼_𝑎𝑚𝑏𝑖𝑒𝑛𝑡"
 So, a complete shading model was obtained with Part 2, Part 3 and Part 4: 
 - "𝐿𝑐𝑜𝑚𝑝𝑙𝑒𝑡𝑒 = 𝑘𝑎 𝐼𝑎 + 𝑘𝑑∗I∗ max(0,n · l)+ 𝑘𝑠∗ 𝐼∗ 𝑚𝑎𝑥(0,𝑛 · ℎ)^𝑝"
-The rendered output of this complete model is Figure 9. As can be observed some of the shadows are less dense (for example shadows that monkey created).
+The rendered output of this complete model is Figure 6. As can be observed some of the shadows are less dense (for example shadows that monkey created).
 
 The rendered output of the complete shading model is presented in [Figure 6](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/bf554251b051e0741c840ab07af992f44065000f/renders_for_readme/checkpoint3_ambientshading_power200.png).
