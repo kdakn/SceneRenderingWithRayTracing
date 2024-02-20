@@ -49,3 +49,35 @@ So, a complete shading model was obtained with Part 2, Part 3 and Part 4:
 The rendered output of this complete model is Figure 6. As can be observed some of the shadows are less dense (for example shadows that monkey created).
 
 The rendered output of the complete shading model is presented in [Figure 6](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/bf554251b051e0741c840ab07af992f44065000f/renders_for_readme/checkpoint3_ambientshading_power200.png).
+
+## Part 5: Reflections
+I applied the “Recursive Ray Tracing Algorithm” to
+obtain “Reflections”. It is the technique that simulates the reflection of light on surfaces to create more realistic
+images. To explain in detail, recursive ray tracing is a rendering technique used for computing
+specular reflections, for example, those seen in mirrors or glossy surfaces. Also, this technique
+is crucial for simulating dielectric materials (diamonds, glass, etc.). When light travels from one medium to another
+with a different refractive index, a portion of it is transmitted. The
+hemisphere reflects the entire scene, it seems more realistic and visually appealing element to
+the rendering. My code, starts with a depth check, ensuring that the recursive process doesn't
+continue indefinitely. If the depth is greater than zero, the reflection calculations proceed. A
+reflected ray which showed 𝐷reflect is generated from the current intersection point. The
+direction of reflection is calculated using the formula like in the book where D is the is the
+incident ray direction and N is the surface normal.
+D_reflect = ray_dir - Vector(2 * np.dot(ray_dir, hit_norm) * hit_norm)
+Calculation is;
+𝐷reflect = d-2(d.n)n where:
+• r: Reflected vector.
+• d: The incident vector, representing the direction of incoming light or any other vector.
+• n: Normal vector to the surface.
+
+• The reflected ray is then recursively traced using the function RT_trace_ray. This
+involves extending the ray in the reflection direction and calculating its color
+contribution 𝐿reflect based on its interactions with the scene.
+reflect_color = RT_trace_ray(scene, hit_loc + eps * D_reflect, D_reflect, lights, depth - 1)
+• The color contribution from the reflection is adjusted by multiplying it with the
+reflectivity factor 𝑲𝒓 is to determine the strength of the reflection.
+• The adjusted color contribution is added to the original pixel color, contributing to the
+final color of the pixel in the rendered image. Similar to the treatment of shadow ray
+casting, self-occlusion is considered to prevent reflections from being inaccurately
+occluded by the same object, ensuring a more accurate representation.
+•Finally, after rendered the scene I reached this image in shown in [Figure 7](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/bf554251b051e0741c840ab07af992f44065000f/renders_for_readme/checkpoint2.1_diffuse.png).
