@@ -5,6 +5,9 @@
    1. [Diffuse Component – Lambertian Shading](#part31-diffuse-component--lambertian-shading)
    2. [Specular Component – Blinn Phong Shading](#part32-specular-component--blinn-phong-shading)
 4. [Part 4: Ambient Light](#part4-ambient-light)
+5. [Part 5: Reflections](#part5-reflections)
+6. [Part 6: Fresnel Equation](#part6-fresnel-equation)
+7. [Part 7: Transmission](#part7-transmission)
 
 ## Part 1: Introduction
 This project was developed by using advanced rendering techniques, such as shadow generation using the Ray Tracing Algorithm, Lambertian and Blinn-Phong Shadings, and the incorporation of ambient light to improve realism of the scene.
@@ -99,3 +102,46 @@ approximation formula to determine the overall reflectivity (𝐾r).
 reflectivity = R_0 + (1 - R_0) * (1 - np.cos(incident_angle))**5
 - The Fresnel effect is modeled through the term (1−R0) (1 − cos(𝜃))^5, where θ is the incident
 angle. Finally, after rendered I reached this image in [Figure 8](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint5_fresnel.png).
+- For example you can see some additional reflections on the black trapezoid also in [Figure 9](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20162936.png).
+
+## Part 7: Transmission
+To make pictures look more real, I applied refractions to some objects in the scene.
+I achieved them using a technique called transmission. In simple terms,
+transmission in ray tracing is how light behaves when it goes through see-through stuff like
+glass or water.
+When I added transmission to our ray tracing process, it let me to simulate how light moves
+through transparent materials.
+My code:
+- Firstly checks if the material has transparency (if mat.transmission > 0) and whether the depth
+of recursion is greater than zero before performing transmission calculations.
+- Assigns refractive indices n_1 and n_2 based on the media through which the ray is passing.
+n_1 is the refractive index of air (set to 1), and n_2 is the refractive index of the material
+obtained from mat.ior. Calculates an intermediate vector here by scaling the ray direction.
+This vector is used in the subsequent calculations. Here is the sample code lines:
+- n_1 = 1
+- n_2 = mat.ior
+- here= ray_dir*(n_1/n_2).
+- The code computes the transmitted ray direction (D_transmit) using Snell's Law, which describes how
+light bends when passing through different objects. The formula involves the incident ray
+direction (ray_dir), surface normal (hit_norm), and refractive indices. I calculated
+D_transmit with the formula which is: [Figure 10] (https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20163528.png).
+- This equation models situations of [Figure 11](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20164118.png) and [Figure 12](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20164127.png)
+- The code I wrote for transmission:
+- if mat.transmission > 0:
+- n_1 = 1
+- n_2 = mat.ior
+- here= ray_dir*(n_1/n_2)
+- D_transmit = ray_dir*(n_1/n_2)-hit_norm*((n_1/n_2)*np.dot(ray_dir,hit_norm)+sqrt(1-((n_1/n_2)**2)*(1-(np.dot(ray_dir,hit_norm))**2)))
+- L_transmit = RT_trace_ray(scene, hit_loc + eps * D_transmit, D_transmit, lights, depth - 1)
+- color += L_transmit * (1 - reflectivity)
+
+- Then, it recursively traces the transmitted ray using the RT_trace_ray function. This simulates the
+continuation of the ray through the transparent material, and the return value is stored as
+L_transmit. Also, calculation for L_transmit is:
+- L_transmit = RT_trace_ray(scene, hit_loc + eps * D_transmit, D_transmit, lights, depth - 1).
+- Calculates the contribution of transmission to the final color by multiplying L_transmit with
+(1 - reflectivity). This step accounts for the portion of light that is transmitted through the
+material.
+- Finally, after rendered we reached this image in [Figure 13](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint6.png).
+
+
