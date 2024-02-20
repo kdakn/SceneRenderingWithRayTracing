@@ -73,39 +73,44 @@ Calculation is;
 - d: The incident vector, representing the direction of incoming light or any other vector.
 - n: Normal vector to the surface.
 
-  • The reflected ray is then recursively traced using the function RT_trace_ray. This
+The reflected ray is then recursively traced using the function RT_trace_ray. This
 involves extending the ray in the reflection direction and calculating its color
 contribution 𝐿reflect based on its interactions with the scene.
 reflect_color = RT_trace_ray(scene, hit_loc + eps * D_reflect, D_reflect, lights, depth - 1)
 
-• The color contribution from the reflection is adjusted by multiplying it with the
+The color contribution from the reflection is adjusted by multiplying it with the
 reflectivity factor 𝑲𝒓 is to determine the strength of the reflection.
 
-• The adjusted color contribution is added to the original pixel color, contributing to the
+The adjusted color contribution is added to the original pixel color, contributing to the
 final color of the pixel in the rendered image. Similar to the treatment of shadow ray
 casting, self-occlusion is considered to prevent reflections from being inaccurately
 occluded by the same object, ensuring a more accurate representation.
 
-•Finally, after rendered the scene I reached this image in shown in [Figure 7](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint4_reflection.png)
+Finally, after rendered the scene I reached this image in shown in [Figure 7](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint4_reflection.png)
 
 ## Part 6: Fresnel Equation
 To enhance the quality of the renders I implemented the Fresnel
 reflections. Fresnel reflection is a phenomenon that accounts for the varying reflectivity of
 surfaces based on the viewing angle which is called the "Grazing
 Angle". If viewing angle is same as the grazing angle then, the reflection should be stronger.
-- In this section for my code introduce a conditional check for the use of Fresnel reflection. If
+
+In this section for my code introduce a conditional check for the use of Fresnel reflection. If
 Fresnel is not enabled, the reflectivity is obtained directly from the material properties.
 However, when Fresnel is active (if mat.use_fresnel), I proceed to calculate the reflectivity
 using Schlick’s approximation.
-- To ensure accurate calculations, both the view vector and the surface normal vector are
+
+To ensure accurate calculations, both the view vector and the surface normal vector are
 normalized. The incident angle (θ) is calculated using the dot product between the normalized
 surface normal and view vectors.
-- The code then computes the Fresnel reflectivity (R0) and and utilizes it in the Schlick’s
+
+The code then computes the Fresnel reflectivity (R0) and and utilizes it in the Schlick’s
 approximation formula to determine the overall reflectivity (𝐾r).
 reflectivity = R_0 + (1 - R_0) * (1 - np.cos(incident_angle))**5
-- The Fresnel effect is modeled through the term (1−R0) (1 − cos(𝜃))^5, where θ is the incident
+
+The Fresnel effect is modeled through the term (1−R0) (1 − cos(𝜃))^5, where θ is the incident
 angle. Finally, after rendered I reached this image in [Figure 8](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint5_fresnel.png).
-- For example you can see some additional reflections on the black trapezoid also in [Figure 9](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20162936.png).
+
+For example you can see some additional reflections on the black trapezoid also in [Figure 9](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20162936.png).
 
 ## Part 7: Transmission
 To make pictures look more real, I applied refractions to some objects in the scene.
@@ -114,21 +119,26 @@ transmission in ray tracing is how light behaves when it goes through see-throug
 glass or water.
 When I added transmission to our ray tracing process, it let me to simulate how light moves
 through transparent materials.
+
 My code:
-- Firstly checks if the material has transparency (if mat.transmission > 0) and whether the depth
+
+Firstly checks if the material has transparency (if mat.transmission > 0) and whether the depth
 of recursion is greater than zero before performing transmission calculations.
-- Assigns refractive indices n_1 and n_2 based on the media through which the ray is passing.
+
+Assigns refractive indices n_1 and n_2 based on the media through which the ray is passing.
 n_1 is the refractive index of air (set to 1), and n_2 is the refractive index of the material
 obtained from mat.ior. Calculates an intermediate vector here by scaling the ray direction.
 This vector is used in the subsequent calculations. Here is the sample code lines:
 - n_1 = 1
 - n_2 = mat.ior
 - here= ray_dir*(n_1/n_2).
-- The code computes the transmitted ray direction (D_transmit) using Snell's Law, which describes how
+
+The code computes the transmitted ray direction (D_transmit) using Snell's Law, which describes how
 light bends when passing through different objects. The formula involves the incident ray
 direction (ray_dir), surface normal (hit_norm), and refractive indices. I calculated
 D_transmit with the formula which is: [Figure 10] (https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20163528.png).
-- This equation models situations of [Figure 11](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20164118.png) and [Figure 12](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20164127.png)
+
+This equation models situations of [Figure 11](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20164118.png) and [Figure 12](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/Screenshot%202024-02-20%20164127.png)
 - The code I wrote for transmission:
 - if mat.transmission > 0:
 - n_1 = 1
@@ -138,13 +148,11 @@ D_transmit with the formula which is: [Figure 10] (https://github.com/kdakn/Scen
 - L_transmit = RT_trace_ray(scene, hit_loc + eps * D_transmit, D_transmit, lights, depth - 1)
 - color += L_transmit * (1 - reflectivity)
 
-- Then, it recursively traces the transmitted ray using the RT_trace_ray function. This simulates the
+Then, it recursively traces the transmitted ray using the RT_trace_ray function. This simulates the
 continuation of the ray through the transparent material, and the return value is stored as
 L_transmit. Also, calculation for L_transmit is:
 - L_transmit = RT_trace_ray(scene, hit_loc + eps * D_transmit, D_transmit, lights, depth - 1).
-- Calculates the contribution of transmission to the final color by multiplying L_transmit with
-(1 - reflectivity). This step accounts for the portion of light that is transmitted through the
-material.
-- Finally, after rendered we reached this image in [Figure 13](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint6.png).
+
+Finally, after rendered we reached this image in [Figure 13](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint6.png).
 
 
