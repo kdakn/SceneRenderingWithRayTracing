@@ -73,17 +73,20 @@ Calculation is;
 - d: The incident vector, representing the direction of incoming light or any other vector.
 - n: Normal vector to the surface.
 
-- • The reflected ray is then recursively traced using the function RT_trace_ray. This
+  • The reflected ray is then recursively traced using the function RT_trace_ray. This
 involves extending the ray in the reflection direction and calculating its color
 contribution 𝐿reflect based on its interactions with the scene.
 reflect_color = RT_trace_ray(scene, hit_loc + eps * D_reflect, D_reflect, lights, depth - 1)
-- • The color contribution from the reflection is adjusted by multiplying it with the
+
+• The color contribution from the reflection is adjusted by multiplying it with the
 reflectivity factor 𝑲𝒓 is to determine the strength of the reflection.
-- • The adjusted color contribution is added to the original pixel color, contributing to the
+
+• The adjusted color contribution is added to the original pixel color, contributing to the
 final color of the pixel in the rendered image. Similar to the treatment of shadow ray
 casting, self-occlusion is considered to prevent reflections from being inaccurately
 occluded by the same object, ensuring a more accurate representation.
-- •Finally, after rendered the scene I reached this image in shown in [Figure 7](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint4_reflection.png)
+
+•Finally, after rendered the scene I reached this image in shown in [Figure 7](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint4_reflection.png)
 
 ## Part 6: Fresnel Equation
 To enhance the quality of the renders I implemented the Fresnel
