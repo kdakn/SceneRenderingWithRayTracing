@@ -66,9 +66,9 @@ incident ray direction and N is the surface normal.
 D_reflect = ray_dir - Vector(2 * np.dot(ray_dir, hit_norm) * hit_norm)
 Calculation is;
 𝐷reflect = d-2(d.n)n where:
-• r: Reflected vector.
-• d: The incident vector, representing the direction of incoming light or any other vector.
-• n: Normal vector to the surface.
+- r: Reflected vector.
+- d: The incident vector, representing the direction of incoming light or any other vector.
+- n: Normal vector to the surface.
 
 • The reflected ray is then recursively traced using the function RT_trace_ray. This
 involves extending the ray in the reflection direction and calculating its color
@@ -81,3 +81,21 @@ final color of the pixel in the rendered image. Similar to the treatment of shad
 casting, self-occlusion is considered to prevent reflections from being inaccurately
 occluded by the same object, ensuring a more accurate representation.
 •Finally, after rendered the scene I reached this image in shown in [Figure 7](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint4_reflection.png)
+
+## Part 6: Fresnel Equation
+To enhance the quality of the renders I implemented the Fresnel
+reflections. Fresnel reflection is a phenomenon that accounts for the varying reflectivity of
+surfaces based on the viewing angle which is called the "Grazing
+Angle". If viewing angle is same as the grazing angle then, the reflection should be stronger.
+- In this section for my code introduce a conditional check for the use of Fresnel reflection. If
+Fresnel is not enabled, the reflectivity is obtained directly from the material properties.
+However, when Fresnel is active (if mat.use_fresnel), I proceed to calculate the reflectivity
+using Schlick’s approximation.
+- To ensure accurate calculations, both the view vector and the surface normal vector are
+normalized. The incident angle (θ) is calculated using the dot product between the normalized
+surface normal and view vectors.
+- The code then computes the Fresnel reflectivity (R0) and and utilizes it in the Schlick’s
+approximation formula to determine the overall reflectivity (𝐾r).
+reflectivity = R_0 + (1 - R_0) * (1 - np.cos(incident_angle))**5
+- The Fresnel effect is modeled through the term (1−R0) (1 − cos(𝜃))^5, where θ is the incident
+angle. Finally, after rendered I reached this image in [Figure 8](https://github.com/kdakn/SceneRenderingWithRayTracing/blob/main/renders_for_readme/checkpoint5_fresnel.png).
